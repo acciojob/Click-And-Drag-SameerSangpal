@@ -36,6 +36,59 @@
 
 <script>
 //Your code goes here 
+	const container = document.getElementById('container');
+    const CUBE_SIZE = 70;
+    const GAP = 20;
+    const COLS = 4;
+    const ROWS = 3;
+
+    // Generate cubes in grid layout
+    for (let i = 0; i < COLS * ROWS; i++) {
+      const cube = document.createElement('div');
+      cube.className = 'cube';
+      const row = Math.floor(i / COLS);
+      const col = i % COLS;
+      cube.style.left = `${col * (CUBE_SIZE + GAP)}px`;
+      cube.style.top = `${row * (CUBE_SIZE + GAP)}px`;
+      container.appendChild(cube);
+    }
+
+    let selectedCube = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    container.addEventListener('mousedown', (e) => {
+      if (e.target.classList.contains('cube')) {
+        selectedCube = e.target;
+        const rect = selectedCube.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        selectedCube.classList.add('dragging');
+      }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (selectedCube) {
+        const containerRect = container.getBoundingClientRect();
+        let x = e.clientX - containerRect.left - offsetX;
+        let y = e.clientY - containerRect.top - offsetY;
+
+        // Clamp within container
+        x = Math.max(0, Math.min(x, container.clientWidth - CUBE_SIZE));
+        y = Math.max(0, Math.min(y, container.clientHeight - CUBE_SIZE));
+
+        selectedCube.style.left = `${x}px`;
+        selectedCube.style.top = `${y}px`;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (selectedCube) {
+        selectedCube.classList.remove('dragging');
+        selectedCube = null;
+      }
+    });
 </script>
 
   </body>
