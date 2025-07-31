@@ -102,7 +102,6 @@
     const COLS = 4;
     const ROWS = 3;
 
-    // Generate cubes in grid layout
     for (let i = 0; i < COLS * ROWS; i++) {
       const cube = document.createElement('div');
       cube.className = 'cube';
@@ -134,7 +133,7 @@
         let x = e.clientX - containerRect.left - offsetX;
         let y = e.clientY - containerRect.top - offsetY;
 
-        // Clamp within container bounds
+
         x = Math.max(0, Math.min(x, container.clientWidth - CUBE_SIZE));
         y = Math.max(0, Math.min(y, container.clientHeight - CUBE_SIZE));
 
