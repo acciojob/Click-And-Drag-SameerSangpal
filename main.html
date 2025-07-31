@@ -10,7 +10,6 @@
       background-color: #f4f4f4;
     }
 
-    /* Scrollable Horizontal Items (Optional Use) */
     .items {
       width: 100%;
       overflow-x: auto;
@@ -19,6 +18,12 @@
       border: 2px solid #333;
       padding: 10px;
       background: #fff;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .items.active {
+      cursor: grabbing;
     }
 
     .item {
@@ -34,7 +39,6 @@
       border-radius: 6px;
     }
 
-    /* Container for draggable cubes */
     #container {
       position: relative;
       width: 400px;
@@ -63,7 +67,6 @@
 </head>
 <body>
 
-  <!-- Optional scrollable strip -->
   <div class="items">
     <div class="item">01</div>
     <div class="item">02</div>
@@ -92,10 +95,42 @@
     <div class="item">25</div>
   </div>
 
-  <!-- Draggable cube container -->
+  <!-- Draggable cubes container -->
   <div id="container"></div>
 
   <script>
+    // --- Drag-scroll for .items ---
+    const items = document.querySelector('.items');
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    items.addEventListener('mousedown', (e) => {
+      isDown = true;
+      items.classList.add('active');
+      startX = e.pageX - items.offsetLeft;
+      scrollLeft = items.scrollLeft;
+    });
+
+    items.addEventListener('mouseleave', () => {
+      isDown = false;
+      items.classList.remove('active');
+    });
+
+    items.addEventListener('mouseup', () => {
+      isDown = false;
+      items.classList.remove('active');
+    });
+
+    items.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - items.offsetLeft;
+      const walk = (x - startX) * 2; // Adjust speed
+      items.scrollLeft = scrollLeft - walk;
+    });
+
+    // --- Draggable cubes ---
     const container = document.getElementById('container');
     const CUBE_SIZE = 70;
     const GAP = 20;
@@ -133,7 +168,7 @@
         let x = e.clientX - containerRect.left - offsetX;
         let y = e.clientY - containerRect.top - offsetY;
 
-
+        // Clamp to bounds
         x = Math.max(0, Math.min(x, container.clientWidth - CUBE_SIZE));
         y = Math.max(0, Math.min(y, container.clientHeight - CUBE_SIZE));
 
@@ -149,6 +184,5 @@
       }
     });
   </script>
-
 </body>
 </html>
